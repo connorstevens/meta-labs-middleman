@@ -1,4 +1,2 @@
-/*/node_modules
-/*/.env
-/py
-/ts/dist
+node_modules
+.env

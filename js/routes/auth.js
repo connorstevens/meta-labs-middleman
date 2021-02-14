@@ -1,48 +1,32 @@
-//import Router from express
-const { Router } = require('express');
-
-//Require Meta Module
+const express = require('express');
 const Meta = require('../utils/Meta');
 
-//require Middleware to check request bodies
-const validateBody = require('../middleware/validateBody');
+const router = express.Router();
 
-//Create Auth Router
-const AuthRouter = Router();
-
-//Setup middleware
-AuthRouter.use(validateBody);
-
-//handle all POST requests to /auth/login
-AuthRouter.post("/login", async(req, res) => {
+// POST /login
+router.post('/login', async (req, res) => {
     const { license, machine } = req.body;
+    
+    if (!machine || !license) return res.sendStatus(400)
 
-    try{
-        if(machine){
-            const authResponse = await Meta.login(license, machine);
-            res.status(200).json(authResponse);    
-        }
-        else{
-            res.status(400).send();
-        }
-    }
-    catch(err){
+    try {
+        const authResponse = await Meta.login(license, machine);
+        return res.status(200).json(authResponse);
+    } catch(err) {
         return res.status(400).send();
     }
-
 });
 
-//handle all POST requests to /auth/reset
-AuthRouter.post("/reset", async(req, res) => {
+// POST /reset
+router.post('/reset', async(req, res) => {
     const { license } = req.body;
     
-    try{
+    try {
         const authResponse = await Meta.reset(license);
-        res.status(200).json(authResponse);
-    }
-    catch(err){
+        return res.status(200).json(authResponse);
+    } catch(err) {
         return res.status(400).send();
     }
 });
 
-module.exports = AuthRouter;
+module.exports = router;

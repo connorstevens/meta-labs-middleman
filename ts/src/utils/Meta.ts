@@ -1,25 +1,25 @@
-const got = require('got');
+import got from "got";
 
 const META_API_KEY = process.env.META_API_KEY;
 
-const login = async function checkLicense(licese, machine) {
+const login = async function checkLicense(license: string, machine: string) {
     try{
-        const response = await got.patch(`https://api.metalabs.io/v4/licenses/${license}`, {
+        const response: MetaResponse = await got.patch(`https://api.metalabs.io/v4/licenses/${license}`, {
             headers: {
                 Authorization: META_API_KEY,
                 "Content-type": "application/json"
             },
             json: {
                 metadata: {
-                    machine: machine
+                    machine
                 }
             }
         }).json();
 
         const { status } = response;
 
-        if(status == "active" || status == "trialing"){
-            //I recommend filtering down the response, I left it as the full object for you to choose.
+        if(status === "active" || status === "trialing"){
+            // I recommend filtering down the response, I left it as the full object for you to choose.
             return response;
         }
         else{
@@ -31,9 +31,9 @@ const login = async function checkLicense(licese, machine) {
     }
 }
 
-const reset = async function resetLicense (license) {
+const reset = async function resetLicense (license: string) {
     try{
-        const response = await got.patch(`https://api.metalabs.io/v4/licenses/${license}`, {
+        const response: MetaResponse = await got.patch(`https://api.metalabs.io/v4/licenses/${license}`, {
             headers: {
                 Authorization: META_API_KEY,
                 "Content-type": "application/json"
@@ -47,7 +47,7 @@ const reset = async function resetLicense (license) {
 
         const { status } = response;
 
-        if(status == "active" || status == "trialing"){
+        if(status === "active" || status === "trialing"){
             return 200;
         }
         else{
@@ -59,7 +59,46 @@ const reset = async function resetLicense (license) {
     }
 }
 
-module.exports = { login, reset };
+export default {
+    login,
+    reset
+}
+
+interface MetaResponse {
+    email: string,
+    key: string,
+    unlocked: boolean,
+    status: "active" | "trialing" | "past_due",
+    cancel_at: any,
+    trial_end: any,
+    created: Date,
+    account: string,
+    customer: string,
+    subscription:any,
+    payment_method: any,
+    plan: Plan,
+    release: any,
+    metadata: object,
+    user: any,
+    id: string
+}
+
+interface Plan {
+    account: string,
+    active: boolean,
+    product: string,
+    price: string,
+    name: string,
+    allow_unbinding: boolean,
+    allow_reselling: boolean,
+    amount: number,
+    created: Date,
+    currency: string,
+    roles: string[],
+    recurring: any,
+    type: string,
+    id: string
+}
 
 /*
     Example Response

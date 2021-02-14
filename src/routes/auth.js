@@ -7,13 +7,13 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
     const { license, machine } = req.body;
     
-    if (!machine || !license) return res.sendStatus(400)
+    if (!machine || !license) return res.sendStatus(400);
 
     try {
         const authResponse = await Meta.login(license, machine);
         return res.status(200).json(authResponse);
     } catch(err) {
-        return res.status(400).send();
+        return res.sendStatus(400);
     }
 });
 
@@ -25,7 +25,7 @@ router.post('/reset', async(req, res) => {
         const authResponse = await Meta.reset(license);
         return res.status(200).json(authResponse);
     } catch(err) {
-        return res.status(400).send();
+        return res.sendStatus(400);
     }
 });
 

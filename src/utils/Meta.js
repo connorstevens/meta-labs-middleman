@@ -2,7 +2,7 @@ const got = require('got');
 
 const META_API_KEY = process.env.META_API_KEY;
 
-const login = async function checkLicense(licese, machine) {
+const login = async function checkLicense(license, machine) {
     try{
         const response = await got.patch(`https://api.metalabs.io/v4/licenses/${license}`, {
             headers: {
